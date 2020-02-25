@@ -20,6 +20,7 @@ def sigmoid(x):
 
 
 def increaseDimension(vector):
+    """increases the dimension of a vector or matrix."""
     return vector[:, None]
 
 
@@ -56,19 +57,17 @@ def naiveSoftmaxLossAndGradient(
                     (dJ / dU)
     """
 
-    softmax_covariance_y = softmax(np.dot(outsideVectors, centerWordVec))
+    y_hat = softmax(np.dot(outsideVectors, centerWordVec))
     """ y^ = Py // P = covariance https://en.wikipedia.org/wiki/Projection_matrix#Overview """
 
-    y_outside_word_ref = softmax_covariance_y[outsideWordIdx]
-
-    loss = - np.log(y_outside_word_ref)
+    loss = - np.log( y_hat[outsideWordIdx])
     """ as seen on 1.a where -log(y^) was proven """
 
-    y_outside_word_ref -= 1
+    y_hat[outsideWordIdx] -= 1
 
-    gradCenterVec = np.transpose(outsideVectors).dot(softmax_covariance_y)
-    gradOutsideVecs = increaseDimension(softmax_covariance_y).dot(
-        np.array([centerWordVec]))  # (N, 1) dot (1, d) -> (N, d)
+    gradCenterVec =  np.transpose(outsideVectors).dot(y_hat)  # shape d x 1
+
+    gradOutsideVecs = increaseDimension(y_hat).dot(np.array([centerWordVec]))
 
     return loss, gradCenterVec, gradOutsideVecs
 
@@ -183,8 +182,10 @@ def skipgram(currentCenterWord, windowSize, outsideWords, word2Ind,
     center_word_ref = centerWordVectors[center_word_key_ptr]
 
     for outsideWordIdx in [word2Ind[word] for word in outsideWords]:
-        iteration_loss, iteration_center_gradient, iteration_outside_gradient = word2vecLossAndGradient(center_word_ref, outsideWordIdx,
-                                                                            outsideVectors, dataset)
+        iteration_loss, iteration_center_gradient, iteration_outside_gradient = word2vecLossAndGradient(center_word_ref,
+                                                                                                        outsideWordIdx,
+                                                                                                        outsideVectors,
+                                                                                                        dataset)
         loss += iteration_loss
         gradCenterVecs[center_word_key_ptr] += iteration_center_gradient
         gradOutsideVectors += iteration_outside_gradient
