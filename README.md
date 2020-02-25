@@ -10,7 +10,7 @@ Used sources:
  - [Regarding softmax gradients](https://ruder.io/word-embeddings-softmax/)
  
  
- -
- ####execution time around 11000 seconds
+ 
+ #####execution time around 11000 seconds
  
  
