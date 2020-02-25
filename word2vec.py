@@ -132,8 +132,8 @@ def negSamplingLossAndGradient(
     gradOutsideVecs = np.zeros_like(outsideVectors)
     gradOutsideVecs[outsideWordIdx] = (outside_vector_sig - 1) * centerWordVec
 
-    for i, neg_index in enumerate(negSampleWordIndices):
-        gradOutsideVecs[neg_index] += (1 - neg_outside_vector_sig[i]) * centerWordVec
+    for i, neg_value in enumerate(negSampleWordIndices):
+        gradOutsideVecs[neg_value] += (1 - neg_outside_vector_sig[i]) * centerWordVec
 
     return loss, gradCenterVec, gradOutsideVecs
 
